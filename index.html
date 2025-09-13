@@ -104,11 +104,11 @@
 
       <section id="results" class="results">
         <div class="kpis">
-          <div class="kpi"><h4>Self‑Awareness</h4><div class="big" id="saScore">–</div><div class="muted" id="saBand"></div></div>
-          <div class="kpi"><h4>Self‑Management</h4><div class="big" id="smScore">–</div><div class="muted" id="smBand"></div></div>
-          <div class="kpi"><h4>Social Awareness</h4><div class="big" id="soaScore">–</div><div class="muted" id="soaBand"></div></div>
-          <div class="kpi"><h4>Relationship Management</h4><div class="big" id="rmScore">–</div><div class="muted" id="rmBand"></div></div>
-          <div class="kpi"><h4>Overall EQ</h4><div class="big" id="overall">–</div><div class="muted" id="overallBand"></div></div>
+          <div class="kpi"><h4>Self‑Awareness</h4><div class="big" id="saScore">–</div></div>
+          <div class="kpi"><h4>Self‑Management</h4><div class="big" id="smScore">–</div></div>
+          <div class="kpi"><h4>Social Awareness</h4><div class="big" id="soaScore">–</div></div>
+          <div class="kpi"><h4>Relationship Management</h4><div class="big" id="rmScore">–</div></div>
+          <div class="kpi"><h4>Overall EQ</h4><div class="big" id="overall">–</div></div>
         </div>
         <div class="actions" style="margin-top:12px;">
           <button id="retake" class="btn">Edit Answers</button>
@@ -186,13 +186,7 @@
     [377,380,95],[381,385,96],[386,389,97],[390,393,98],[394,396,99],[397,400,100]
   ];
 
-  function bandText(score){
-    if(score>=90) return "A strength to capitalize on";
-    if(score>=80) return "A strength to build on";
-    if(score>=70) return "With a little improvement, this could be a strength";
-    if(score>=60) return "Something you should work on";
-    return "A concern you must address";
-  }
+  
 
   // ====== Render questions ======
   const qsWrap = document.getElementById('questions');
@@ -263,12 +257,6 @@
     document.getElementById('soaScore').textContent = SOA;
     document.getElementById('rmScore').textContent = RM;
     document.getElementById('overall').textContent = overall;
-
-    document.getElementById('saBand').textContent = bandText(SA);
-    document.getElementById('smBand').textContent = bandText(SM);
-    document.getElementById('soaBand').textContent = bandText(SOA);
-    document.getElementById('rmBand').textContent = bandText(RM);
-    document.getElementById('overallBand').textContent = bandText(overall);
 
     resultsEl.style.display = 'block';
     resultsEl.scrollIntoView({behavior:'smooth'});
