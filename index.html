@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Emotional Intelligence Appraisal (Self‑Assessment)</title>
+  <style>
+    /* ===== Theme: light, mobile-first ===== */
+    :root {
+      --bg: #f7f9fc;
+      --card: #ffffff;
+      --ink: #222222;
+      --muted: #5a5f6a;
+      --accent: #0b76d3;
+      --accent-2: #12b886;
+      --error: #cc0033;
+      --border: #e3e8ef;
+    }
+    html, body { height: 100%; }
+    body {
+      margin: 0; font-family: Arial, sans-serif; color: var(--ink); background: var(--bg);
+      -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+    }
+    h1, h2, h3, h4 { font-family: Georgia, serif; }
+
+    .container { max-width: 960px; margin: 0 auto; padding: 20px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; box-shadow: 0 6px 18px rgba(0,0,0,.06); }
+
+    .pill { display: inline-block; padding: 6px 10px; border-radius: 999px; background: var(--accent); color: #fff; font-weight: 700; font-size: .8rem; letter-spacing: .2px; }
+    h1 { margin: 8px 0 6px; font-size: clamp(1.3rem, 3.5vw, 1.9rem); }
+    p.lead { margin: 0 0 10px; color: var(--muted); }
+
+    .legend { display: none; color: var(--muted); font-size: .9rem; margin: 6px 0; }
+    @media (min-width: 700px) {
+      .legend { display: grid; grid-template-columns: 1.2fr repeat(6, 1fr); column-gap: 8px; padding: 0 6px; }
+    }
+
+    .grid { display: grid; gap: 12px; }
+    .q { background: #fafcff; border: 1px solid var(--border); border-radius: 14px; padding: 14px; }
+    .row { display: grid; grid-template-columns: 1fr; gap: 10px; }
+    @media (min-width: 700px) {
+      .row { grid-template-columns: 1.2fr repeat(6, 1fr); align-items: center; }
+    }
+    .prompt { font-weight: 600; }
+
+    .choices { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    @media (min-width: 700px) { .choices { display: contents; } }
+    label.choice { display: grid; place-items: center; gap: 6px; border: 1px solid var(--border); border-radius: 10px; padding: 10px; background: #fff; font-size: .85rem; color: var(--muted); }
+    @media (min-width: 700px) { label.choice { border: none; background: transparent; padding: 0; } }
+
+    input[type="radio"] {
+      appearance: none; width: 18px; height: 18px; border-radius: 50%; border: 2px solid #9aa4b2; background: transparent; display: inline-block; position: relative;
+    }
+    input[type="radio"]:checked { border-color: var(--accent); }
+    input[type="radio"]:checked::after { content: ""; position: absolute; inset: 3px; border-radius: 50%; background: var(--accent); }
+
+    .actions { display: grid; grid-template-columns: 1fr; gap: 8px; margin: 12px 0 4px; }
+    @media (min-width: 520px) { .actions { grid-template-columns: repeat(3, minmax(0,1fr)); } }
+    button, .btn { appearance: none; border: 1px solid var(--border); background: #f3f6fb; color: var(--ink); border-radius: 12px; padding: 12px 14px; font-weight: 700; cursor: pointer; transition: transform .05s ease, background .2s ease, border-color .2s ease; text-align: center; }
+    button:hover, .btn:hover { background: #e6eef8; border-color: #cfd8e3; }
+    button:active, .btn:active { transform: translateY(1px); }
+    .btn-accent { background: var(--accent); color: #fff; border: none; }
+    .btn-ghost { background: #fff; }
+
+    .error { color: var(--error); font-weight: 700; display: none; margin: 6px 0 0; }
+
+    .results { display: none; margin-top: 16px; }
+    .kpis { display: grid; grid-template-columns: 1fr; gap: 8px; margin: 10px 0 16px; }
+    @media (min-width: 560px) { .kpis { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 860px) { .kpis { grid-template-columns: repeat(5, 1fr); } }
+    .kpi { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 12px; }
+    .kpi h4 { margin: 0 0 2px; font-size: .9rem; color: var(--muted); font-weight: 800; letter-spacing: .3px; }
+    .kpi .big { font-size: 1.8rem; font-weight: 900; }
+
+    .footer { color: var(--muted); font-size: .82rem; margin-top: 18px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <span class="pill">Self‑Assessment</span>
+      <h1>Emotional Intelligence Appraisal</h1>
+      <p class="lead">Choose the option that best matches how often each statement is true for you. You can change any answer before submitting. All questions are required.</p>
+
+      <form id="eqForm" novalidate>
+        <div class="legend">
+          <div></div>
+          <div>Never</div>
+          <div>Rarely</div>
+          <div>Sometimes</div>
+          <div>Usually</div>
+          <div>Almost Always</div>
+          <div>Always</div>
+        </div>
+        <div id="questions" class="grid"></div>
+        <p id="formError" class="error">Please answer every question before submitting.</p>
+
+        <div class="actions">
+          <button type="button" id="saveDraft" class="btn btn-ghost">Save Progress</button>
+          <button type="button" id="clearDraft" class="btn btn-ghost">Clear Saved</button>
+          <button type="submit" class="btn-accent">Calculate My Scores</button>
+        </div>
+      </form>
+
+      <section id="results" class="results">
+        <div class="kpis">
+          <div class="kpi"><h4>Self‑Awareness</h4><div class="big" id="saScore">–</div><div class="muted" id="saBand"></div></div>
+          <div class="kpi"><h4>Self‑Management</h4><div class="big" id="smScore">–</div><div class="muted" id="smBand"></div></div>
+          <div class="kpi"><h4>Social Awareness</h4><div class="big" id="soaScore">–</div><div class="muted" id="soaBand"></div></div>
+          <div class="kpi"><h4>Relationship Management</h4><div class="big" id="rmScore">–</div><div class="muted" id="rmBand"></div></div>
+          <div class="kpi"><h4>Overall EQ</h4><div class="big" id="overall">–</div><div class="muted" id="overallBand"></div></div>
+        </div>
+        <div class="actions" style="margin-top:12px;">
+          <button id="retake" class="btn">Edit Answers</button>
+        </div>
+      </section>
+
+      <p class="footer">Private, client‑side only. No data leaves your browser. Host this file on GitHub Pages for easy mobile access.</p>
+    </div>
+  </div>
+
+  <script>
+  // ====== ITEMS (28) ======
+  const items = [
+    { id:1,  txt:"are confident in your abilities.", domain:"SA" },
+    { id:2,  txt:"admit your shortcomings.", domain:"SA" },
+    { id:3,  txt:"understand your emotions as they happen.", domain:"SA" },
+    { id:4,  txt:"recognize the impact your behavior has upon others.", domain:"SA" },
+    { id:5,  txt:"realize when others influence your emotional state.", domain:"SA" },
+    { id:6,  txt:"play a part in creating the difficult circumstances you encounter.", domain:"SA", reverse:true, reverseMap:"A64" },
+
+    { id:7,  txt:"can be counted on.", domain:"SM" },
+    { id:8,  txt:"handle stress well.", domain:"SM" },
+    { id:9,  txt:"embrace change early on.", domain:"SM" },
+    { id:10, txt:"tolerate frustration without getting upset.", domain:"SM" },
+    { id:11, txt:"consider many options before making a decision.", domain:"SM" },
+    { id:12, txt:"strive to make the most out of situations, whether good or bad.", domain:"SM" },
+    { id:13, txt:"resist the desire to act or speak when it will not help the situation.", domain:"SM" },
+    { id:14, txt:"do things you regret when upset.", domain:"SM", reverse:true, reverseMap:"N61" },
+    { id:15, txt:"brush people off when something is bothering you.", domain:"SM", reverse:true, reverseMap:"N61" },
+
+    { id:16, txt:"are open to feedback.", domain:"SOA" },
+    { id:17, txt:"recognize other people's feelings.", domain:"SOA" },
+    { id:18, txt:"accurately pick up on the mood in the room.", domain:"SOA" },
+    { id:19, txt:"hear what the other person is \"really\" saying.", domain:"SOA" },
+    { id:20, txt:"are withdrawn in social situations.", domain:"SOA", reverse:true, reverseMap:"N56" },
+
+    { id:21, txt:"directly address people in difficult situations.", domain:"RM" },
+    { id:22, txt:"get along well with others.", domain:"RM" },
+    { id:23, txt:"communicate clearly and effectively.", domain:"RM" },
+    { id:24, txt:"show others you care what they are going through.", domain:"RM" },
+    { id:25, txt:"handle conflict effectively.", domain:"RM" },
+    { id:26, txt:"use sensitivity to another person's feelings to manage interactions effectively.", domain:"RM" },
+    { id:27, txt:"learn about others in order to get along better with them.", domain:"RM" },
+    { id:28, txt:"explain yourself to others.", domain:"RM", reverse:true, reverseMap:"AA65" }
+  ];
+
+  // ====== UI Labels ======
+  const labels = ["Never","Rarely","Sometimes","Usually","Almost Always","Always"];
+
+  // ====== Scoring Maps ======
+  const weightMaps = {
+    STD: [0,1,2,3,4,5,6],
+    A64: [0,1,2,3,5,6,4],      // Q6 custom reverse
+    N61: [0,6,5,4,3,2,1],      // Q14, Q15
+    N56: [0,5,6,4,3,2,1],      // Q20
+    AA65: [0,1,2,3,4,6,5]      // Q28
+  };
+
+  // Raw→Skill conversion tables (per your scoring sheets)
+  const conv = {
+    SA: new Map([[6,16],[7,16],[8,20],[9,24],[10,27],[11,30],[12,33],[13,36],[14,39],[15,42],[16,45],[17,48],[18,51],[19,54],[20,57],[21,60],[22,63],[23,66],[24,69],[25,72],[26,75],[27,78],[28,82],[29,85],[30,88],[31,91],[32,94],[33,97],[34,98],[35,99],[36,100]]),
+    SM: new Map((() => { const m = new Map(); const pairs = [[9,14],[10,14],[11,17],[12,19],[13,21],[14,23],[15,25],[16,27],[17,29],[18,31],[19,33],[20,35],[21,37],[22,39],[23,41],[24,43],[25,45],[26,47],[27,49],[28,51],[29,53],[30,55],[31,57],[32,59],[33,61],[34,63],[35,65],[36,67],[37,69],[38,71],[39,73],[40,75],[41,77],[42,79],[43,81],[44,83],[45,85],[46,87],[47,89],[48,91],[49,93],[50,95],[51,97],[52,98],[53,99],[54,100]]; pairs.forEach(([k,v])=>m.set(k,v)); return m; })()),
+    SOA: new Map((() => { const m = new Map(); const pairs = [[5,16],[6,19],[7,22],[8,25],[9,29],[10,32],[11,35],[12,38],[13,41],[14,45],[15,48],[16,51],[17,54],[18,58],[19,61],[20,64],[21,67],[22,70],[23,74],[24,77],[25,80],[26,83],[27,87],[28,90],[29,95],[30,100]]; pairs.forEach(([k,v])=>m.set(k,v)); return m; })()),
+    RM: new Map((() => { const m = new Map(); const pairs = [[8,19],[9,21],[10,23],[11,25],[12,27],[13,29],[14,31],[15,33],[16,35],[17,37],[18,39],[19,41],[20,43],[21,45],[22,47],[23,49],[24,51],[25,53],[26,55],[27,57],[28,59],[29,61],[30,63],[31,65],[32,67],[33,69],[34,71],[35,73],[36,75],[37,77],[38,79],[39,81],[40,83],[41,85],[42,87],[43,89],[44,91],[45,93],[46,95],[47,97],[48,100]]; pairs.forEach(([k,v])=>m.set(k,v)); return m; })())
+  };
+
+  // Overall EQ mapping (sum of the 4 skill scores → overall 10–100)
+  const overallRanges = [
+    [40,48,10],[49,68,15],[69,88,20],[89,108,25],[109,128,30],[129,148,35],[149,167,40],[168,187,45],
+    [188,203,50],[204,211,52],[212,219,54],[220,227,56],[228,238,58],[239,242,60],[243,246,61],[247,250,62],
+    [251,254,63],[255,258,64],[259,262,65],[263,266,66],[267,270,67],[271,273,68],[274,277,69],[278,281,70],
+    [282,285,71],[286,289,72],[290,293,73],[294,297,74],[298,301,75],[302,305,76],[306,309,77],[310,313,78],
+    [314,318,79],[319,323,80],[324,326,81],[327,330,82],[331,334,83],[335,337,84],[338,341,85],[342,344,86],
+    [345,348,87],[349,352,88],[353,356,89],[357,360,90],[361,364,91],[365,368,92],[369,372,93],[373,376,94],
+    [377,380,95],[381,385,96],[386,389,97],[390,393,98],[394,396,99],[397,400,100]
+  ];
+
+  function bandText(score){
+    if(score>=90) return "A strength to capitalize on";
+    if(score>=80) return "A strength to build on";
+    if(score>=70) return "With a little improvement, this could be a strength";
+    if(score>=60) return "Something you should work on";
+    return "A concern you must address";
+  }
+
+  // ====== Render questions ======
+  const qsWrap = document.getElementById('questions');
+  function renderQuestions(){
+    items.forEach(it => {
+      const q = document.createElement('div');
+      q.className = 'q';
+      const legendMobile = labels.map((l, idx) => `
+        <label class="choice">
+          <input type="radio" name="q${it.id}" value="${idx+1}" ${idx===0? 'required':''} aria-label="${l}">
+          <div>${l}</div>
+        </label>`).join('');
+      q.innerHTML = `
+        <div class="row">
+          <div class="prompt"><span class="muted">(${it.id})</span> You ${it.txt}</div>
+          <div class="choices">${legendMobile}</div>
+        </div>`;
+      qsWrap.appendChild(q);
+    });
+  }
+  renderQuestions();
+
+  // ====== Helpers ======
+  function valOf(qid){
+    const checked = document.querySelector(`input[name="q${qid}"]:checked`);
+    if(!checked) return null;
+    const choice = parseInt(checked.value,10);
+    const it = items.find(i => i.id===qid);
+    if(it.reverse){
+      return weightMaps[it.reverseMap][choice];
+    }
+    return weightMaps.STD[choice];
+  }
+
+  function ensureComplete(){
+    for(const it of items){ if(valOf(it.id)===null) return false; } return true;
+  }
+
+  function sumDomain(domain){ let s=0; for(const it of items){ if(it.domain===domain){ s += valOf(it.id); } } return s; }
+  const convert = (domain, raw) => conv[domain].get(raw);
+  function overallFrom(sum){ for(const [lo,hi,val] of overallRanges){ if(sum>=lo && sum<=hi) return val; } return null; }
+
+  // ====== Form submit ======
+  const form = document.getElementById('eqForm');
+  const formError = document.getElementById('formError');
+  const resultsEl = document.getElementById('results');
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    formError.style.display = 'none';
+
+    if(!ensureComplete()){
+      formError.style.display = 'block';
+      formError.scrollIntoView({behavior:'smooth', block:'center'});
+      return;
+    }
+
+    const raw = { SA: sumDomain('SA'), SM: sumDomain('SM'), SOA: sumDomain('SOA'), RM: sumDomain('RM') };
+    const SA = convert('SA', raw.SA);
+    const SM = convert('SM', raw.SM);
+    const SOA = convert('SOA', raw.SOA);
+    const RM = convert('RM', raw.RM);
+    const totalSkills = SA + SM + SOA + RM;
+    const overall = overallFrom(totalSkills);
+
+    document.getElementById('saScore').textContent = SA;
+    document.getElementById('smScore').textContent = SM;
+    document.getElementById('soaScore').textContent = SOA;
+    document.getElementById('rmScore').textContent = RM;
+    document.getElementById('overall').textContent = overall;
+
+    document.getElementById('saBand').textContent = bandText(SA);
+    document.getElementById('smBand').textContent = bandText(SM);
+    document.getElementById('soaBand').textContent = bandText(SOA);
+    document.getElementById('rmBand').textContent = bandText(RM);
+    document.getElementById('overallBand').textContent = bandText(overall);
+
+    resultsEl.style.display = 'block';
+    resultsEl.scrollIntoView({behavior:'smooth'});
+
+    saveSnapshot({ raw, SA, SM, SOA, RM, totalSkills, overall });
+  });
+
+  // ====== Save / Restore progress (local only) ======
+  const DRAFT_KEY = 'eq_appraisal_v1';
+  function getSnapshot(){
+    const answers = {}; items.forEach(it => {
+      const chosen = document.querySelector(`input[name="q${it.id}"]:checked`);
+      answers[it.id] = chosen ? chosen.value : null;
+    }); return answers;
+  }
+  function setSnapshot(answers){ items.forEach(it => { const v = answers[it.id]; if(!v) return; const node = document.querySelector(`input[name="q${it.id}"][value="${v}"]`); if(node) node.checked = true; }); }
+  function saveSnapshot(extra){ const answers = getSnapshot(); const payload = { answers, meta: extra||null, ts: Date.now() }; try{ localStorage.setItem(DRAFT_KEY, JSON.stringify(payload)); }catch{} }
+  document.getElementById('saveDraft').addEventListener('click', () => { saveSnapshot(); alert('Progress saved to this device.'); });
+  document.getElementById('clearDraft').addEventListener('click', () => { localStorage.removeItem(DRAFT_KEY); alert('Saved progress cleared for this device.'); });
+  document.getElementById('retake').addEventListener('click', () => { resultsEl.style.display = 'none'; window.scrollTo({top:0, behavior:'smooth'}); });
+  try { const saved = JSON.parse(localStorage.getItem(DRAFT_KEY)); if(saved && saved.answers) setSnapshot(saved.answers); } catch {}
+  </script>
+</body>
+</html>
